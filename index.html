@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,8 +8,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV/XN/WLcE=" crossorigin=""></script>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <style>
     :root {
       --bg-deep:       #0d1a0f;
@@ -96,7 +97,14 @@
       border-radius: 6px;
       padding: 7px 10px;
       text-align: center;
+      cursor: pointer;
+      transition: border-color 0.18s, background 0.18s;
+      user-select: none;
     }
+    .legend-card:hover { border-color: var(--border-bright); background: var(--bg-hover); }
+    .legend-card.active { border-color: var(--gold); background: var(--gold-glow); }
+    .legend-card.active .abbr { color: var(--gold); }
+    .legend-card .sort-arrow { font-size: 0.6rem; color: var(--gold); margin-left: 3px; }
     .legend-card .abbr {
       font-size: 0.65rem; font-weight: 700;
       letter-spacing: 0.1em; text-transform: uppercase;
@@ -297,14 +305,14 @@
   <div class="legend">
     <p class="legend-label">Scoring Criteria — Each Category Out of 10</p>
     <div class="legend-grid">
-      <div class="legend-card"><span class="abbr">A&H</span><span class="full">Appearance &amp; Head</span></div>
-      <div class="legend-card"><span class="abbr">PQ</span><span class="full">Pour Quality</span></div>
-      <div class="legend-card"><span class="abbr">HR</span><span class="full">Head Retention</span></div>
-      <div class="legend-card"><span class="abbr">M/C</span><span class="full">Mouthfeel / Carbonation</span></div>
-      <div class="legend-card"><span class="abbr">F/LQ</span><span class="full">Freshness / Line Quality</span></div>
-      <div class="legend-card"><span class="abbr">FB</span><span class="full">Flavor Balance</span></div>
-      <div class="legend-card"><span class="abbr">Temp</span><span class="full">Temperature</span></div>
-      <div class="legend-card"><span class="abbr">BC</span><span class="full">Bar Consistency</span></div>
+      <div class="legend-card" data-col="s0"><span class="abbr">A&amp;H<span class="sort-arrow"></span></span><span class="full">Appearance &amp; Head</span></div>
+      <div class="legend-card" data-col="s1"><span class="abbr">PQ<span class="sort-arrow"></span></span><span class="full">Pour Quality</span></div>
+      <div class="legend-card" data-col="s2"><span class="abbr">HR<span class="sort-arrow"></span></span><span class="full">Head Retention</span></div>
+      <div class="legend-card" data-col="s3"><span class="abbr">M/C<span class="sort-arrow"></span></span><span class="full">Mouthfeel / Carbonation</span></div>
+      <div class="legend-card" data-col="s4"><span class="abbr">F/LQ<span class="sort-arrow"></span></span><span class="full">Freshness / Line Quality</span></div>
+      <div class="legend-card" data-col="s5"><span class="abbr">FB<span class="sort-arrow"></span></span><span class="full">Flavor Balance</span></div>
+      <div class="legend-card" data-col="s6"><span class="abbr">Temp<span class="sort-arrow"></span></span><span class="full">Temperature</span></div>
+      <div class="legend-card" data-col="s7"><span class="abbr">BC<span class="sort-arrow"></span></span><span class="full">Bar Consistency</span></div>
     </div>
   </div>
 
@@ -620,15 +628,17 @@ function getSorted() {
 
 function initSortHeaders() {
   document.querySelectorAll('thead th[data-col]').forEach(th => {
-    th.addEventListener('click', () => handleSort(th));
+    th.addEventListener('click', () => handleSort(th.dataset.col));
     th.addEventListener('keydown', e => {
-      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleSort(th); }
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleSort(th.dataset.col); }
     });
+  });
+  document.querySelectorAll('.legend-card[data-col]').forEach(card => {
+    card.addEventListener('click', () => handleSort(card.dataset.col));
   });
 }
 
-function handleSort(th) {
-  const col = th.dataset.col;
+function handleSort(col) {
   if (sort.col === col) {
     sort.dir = sort.dir === 'asc' ? 'desc' : 'asc';
   } else {
@@ -640,15 +650,26 @@ function handleSort(th) {
 }
 
 function updateHeaders() {
+  const arrow = sort.dir === 'asc' ? '↑' : '↓';
   document.querySelectorAll('thead th[data-col]').forEach(th => {
     th.classList.remove('active');
     th.removeAttribute('aria-sort');
     if (th.dataset.col === sort.col) {
       th.classList.add('active');
-      th.dataset.arrow = sort.dir === 'asc' ? '↑' : '↓';
+      th.dataset.arrow = arrow;
       th.setAttribute('aria-sort', sort.dir === 'asc' ? 'ascending' : 'descending');
     } else {
       th.dataset.arrow = '';
+    }
+  });
+  document.querySelectorAll('.legend-card[data-col]').forEach(card => {
+    card.classList.remove('active');
+    const arrowEl = card.querySelector('.sort-arrow');
+    if (card.dataset.col === sort.col) {
+      card.classList.add('active');
+      if (arrowEl) arrowEl.textContent = arrow;
+    } else {
+      if (arrowEl) arrowEl.textContent = '';
     }
   });
 }
@@ -703,6 +724,7 @@ function initMap() {
   });
 
   leafletMap.fitBounds(bounds, { padding: [40, 40] });
+  setTimeout(() => leafletMap.invalidateSize(), 250);
 }
 
 /* =========================================================
