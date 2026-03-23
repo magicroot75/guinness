@@ -271,6 +271,30 @@
     .popup-link:hover { border-color: var(--gold); color: var(--gold); }
     .leaflet-container { font-family: 'Inter', sans-serif !important; }
 
+    /* ── FOOTNOTE ── */
+    .footnote {
+      margin-top: 40px;
+      padding: 24px 24px 28px;
+      border-top: 1px solid var(--border);
+      border-radius: 0 0 10px 10px;
+    }
+    .footnote-label {
+      font-family: 'Cinzel', serif;
+      font-size: 0.6rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--cream-faint);
+      margin-bottom: 12px;
+    }
+    .footnote p {
+      font-size: 0.78rem;
+      color: var(--cream-faint);
+      line-height: 1.7;
+      margin-bottom: 10px;
+      max-width: 860px;
+    }
+    .footnote p:last-child { margin-bottom: 0; }
+
     /* ── FOOTER ── */
     footer {
       text-align: center; margin-top: 48px;
@@ -346,6 +370,17 @@
       <span class="map-hint">Click a bar in the table to zoom the map · Click a pin to highlight the table row</span>
     </div>
     <div id="map"></div>
+  </div>
+
+  <!-- FOOTNOTE -->
+  <div class="footnote">
+    <p class="footnote-label">Methodology</p>
+    <p>These rankings are based on an eight-factor Guinness rubric, with each category scored on a 0 to 10 scale: Appearance &amp; Head, Pour Quality, Head Retention, Mouthfeel / Carbonation, Freshness / Line Quality, Flavor Balance, Temperature, and Bar Consistency. The final score is expressed as a weighted total out of 100.</p>
+    <p>The weights are designed to favor how the pint actually drinks over bar folklore or Irish-pub décor. Freshness / Line Quality carries the most weight at 25%. Mouthfeel / Carbonation, Flavor Balance, and Head Retention each count for 15%. Appearance &amp; Head and Pour Quality each count for 10%. Temperature and Bar Consistency each count for 5%.</p>
+    <p>In plain terms, that means a bar does not get to the top of the list just because the pint looks pretty. A great Guinness needs clean lines, strong turnover, proper gas, a dense lasting head, creamy texture, balanced roast character, and evidence that the bar can do it repeatedly.</p>
+    <p>Scores were assigned using published Guinness-specific reporting and detailed bar assessments, not marketing copy and not generic "best Irish pub" lists. Preference was given to sources that discussed the pint itself in concrete terms such as settle time, pour technique, head structure, texture, freshness, serving temperature, and consistency across visits. When coverage was thin, vague, or mostly based on broad pub reputation, that bar was scored more cautiously.</p>
+    <p>Bars with weak scores driven mainly by lack of reliable evidence, rather than clearly documented weak pints, were removed from the published ranking rather than left in as false precision. The goal is not to pretend every bar has the same quality of evidence behind it.</p>
+    <p>These rankings are still judgments, not laboratory measurements. They are best read as a structured, evidence-informed guide to where you are most likely to get an excellent pint in New York. As the site notes, the scores are subjective and for entertainment purposes.</p>
   </div>
 
   <!-- FOOTER -->
