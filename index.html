@@ -303,7 +303,7 @@
 
   <!-- CRITERIA LEGEND -->
   <div class="legend">
-    <p class="legend-label">Scoring Criteria — Each Category Out of 10</p>
+    <p class="legend-label">Scoring Criteria · Each Category Out of 10</p>
     <div class="legend-grid">
       <div class="legend-card" data-col="s0"><span class="abbr">A&amp;H<span class="sort-arrow"></span></span><span class="full">Appearance &amp; Head</span></div>
       <div class="legend-card" data-col="s1"><span class="abbr">PQ<span class="sort-arrow"></span></span><span class="full">Pour Quality</span></div>
@@ -342,7 +342,7 @@
   <!-- MAP -->
   <div class="map-section">
     <div class="map-header">
-      <span class="map-title">📍 Bar Locations — New York City</span>
+      <span class="map-title">📍 Bar Locations, New York City</span>
       <span class="map-hint">Click a bar in the table to zoom the map · Click a pin to highlight the table row</span>
     </div>
     <div id="map"></div>
@@ -350,7 +350,7 @@
 
   <!-- FOOTER -->
   <footer>
-    <p><strong>NYC Guinness Rankings</strong> — Scores are subjective and for entertainment purposes only.</p>
+    <p><strong>NYC Guinness Rankings.</strong> Scores are subjective and for entertainment purposes only.</p>
     <p style="margin-top:5px;">Click any column header to sort · Click any bar name to zoom the map · Sláinte 🍺</p>
   </footer>
 
@@ -647,6 +647,7 @@ function handleSort(col) {
   }
   updateHeaders();
   renderTable();
+  updateMarkerScores();
 }
 
 function updateHeaders() {
@@ -677,7 +678,7 @@ function updateHeaders() {
 /* =========================================================
    LEAFLET MAP
 ========================================================= */
-let leafletMap, markers = {};
+let leafletMap, markers = {}, markerScoreEls = {};
 
 function initMap() {
   leafletMap = L.map('map', { zoomControl: true });
@@ -687,21 +688,29 @@ function initMap() {
     maxZoom: 19
   }).addTo(leafletMap);
 
-  // Custom gold pin icon
-  const goldIcon = L.divIcon({
-    className: '',
-    html: `<div style="
-      width:28px;height:28px;
-      background:linear-gradient(135deg,#d4a847,#7a5a12);
-      border:2px solid #f5f0e8;
-      border-radius:50% 50% 50% 0;
-      transform:rotate(-45deg);
-      box-shadow:0 2px 6px rgba(0,0,0,0.5);
-    "></div>`,
-    iconSize: [28, 28],
-    iconAnchor: [14, 28],
-    popupAnchor: [0, -30]
-  });
+  // Custom gold pin icon with score inside
+  function makeIcon(score) {
+    return L.divIcon({
+      className: '',
+      html: `<div style="
+        width:36px;height:36px;
+        background:linear-gradient(135deg,#d4a847,#7a5a12);
+        border:2px solid #f5f0e8;
+        border-radius:50% 50% 50% 0;
+        transform:rotate(-45deg);
+        box-shadow:0 2px 6px rgba(0,0,0,0.5);
+        display:flex;align-items:center;justify-content:center;
+      "><span class="marker-score" style="
+        display:block;transform:rotate(45deg);
+        font-size:7.5px;font-weight:800;color:#fff;
+        line-height:1;white-space:nowrap;
+        font-family:Inter,sans-serif;letter-spacing:-0.02em;
+      ">${score}</span></div>`,
+      iconSize: [36, 36],
+      iconAnchor: [18, 36],
+      popupAnchor: [0, -38]
+    });
+  }
 
   const bounds = [];
 
@@ -714,7 +723,7 @@ function initMap() {
       <a class="popup-link" href="${mapsUrl}" target="_blank" rel="noopener noreferrer">Open in Google Maps ↗</a>
     `;
 
-    const marker = L.marker([pub.lat, pub.lng], { icon: goldIcon })
+    const marker = L.marker([pub.lat, pub.lng], { icon: makeIcon(pub.weighted.toFixed(1)) })
       .addTo(leafletMap)
       .bindPopup(popupHtml, { maxWidth: 240 });
 
@@ -724,7 +733,25 @@ function initMap() {
   });
 
   leafletMap.fitBounds(bounds, { padding: [40, 40] });
-  setTimeout(() => leafletMap.invalidateSize(), 250);
+  setTimeout(() => {
+    leafletMap.invalidateSize();
+    PUBS.forEach(pub => {
+      const el = markers[pub.name].getElement();
+      if (el) markerScoreEls[pub.name] = el.querySelector('.marker-score');
+    });
+  }, 250);
+}
+
+function updateMarkerScores() {
+  PUBS.forEach(pub => {
+    const el = markerScoreEls[pub.name];
+    if (!el) return;
+    if (sort.col.startsWith('s')) {
+      el.textContent = pub.scores[parseInt(sort.col.slice(1))].toFixed(1);
+    } else {
+      el.textContent = pub.weighted.toFixed(1);
+    }
+  });
 }
 
 /* =========================================================
