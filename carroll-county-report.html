@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Trap of Charm: The Civic Review</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,900;1,400;1,700&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,600;1,8..60,300;1,8..60,400&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy:      #1B3A6B;   /* Carroll County flag blue */
+      --cream:     #FFFFFF;   /* White field of flag */
+      --cream-mid: #EEF2FA;   /* Light blue tint */
+      --gold:      #C0281E;   /* Carroll County flag red (accent) */
+      --gold-lt:   #E05050;   /* Lighter red */
+      --red:       #8B1527;   /* Darker red for warning indicators */
+      --green:     #2a6e3f;
+      --text:      #1a1a1a;
+      --text-mid:  #4a4a4a;
+      --text-lt:   #888;
+      --border:    #C0CCE3;
+    }
+
+    html { font-size: 17px; }
+
+    body {
+      background: var(--cream);
+      color: var(--text);
+      font-family: 'Source Serif 4', Georgia, serif;
+      line-height: 1.72;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 24px 60px;
+    }
+
+    /* MASTHEAD */
+    .masthead {
+      border-top: 5px solid var(--navy);
+      border-bottom: 1px solid var(--navy);
+      padding: 10px 0 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .mast-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.45rem;
+      font-weight: 900;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--navy);
+    }
+    .mast-right { display: flex; align-items: center; gap: 14px; }
+    .mast-flag { height: 30px; border: 1px solid var(--border); display: block; }
+    .mast-issue {
+      font-size: 0.7rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--text-lt);
+      font-weight: 300;
+    }
+
+    /* HERO */
+    .hero {
+      padding: 52px 0 44px;
+      text-align: center;
+      border-bottom: 3px double var(--navy);
+    }
+    .hero-kicker {
+      font-size: 0.7rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--gold);
+      font-weight: 600;
+      margin-bottom: 22px;
+    }
+    .hero-flag-wrap {
+      margin-bottom: 26px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 16px;
+    }
+    .hero-flag-img {
+      height: 84px;
+      border: 1px solid var(--border);
+      box-shadow: 0 3px 12px rgba(27,58,107,0.18);
+    }
+    .hero-flag-label {
+      font-size: 0.66rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--text-lt);
+      text-align: left;
+      line-height: 1.7;
+    }
+    .hero h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(3.4rem, 8vw, 6rem);
+      font-weight: 900;
+      line-height: 0.95;
+      color: var(--navy);
+      letter-spacing: -0.02em;
+      margin-bottom: 22px;
+    }
+    .hero-rule { width: 56px; height: 3px; background: var(--gold); margin: 0 auto 22px; }
+    .hero-subhead {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: 1.3rem;
+      color: var(--text-mid);
+      max-width: 580px;
+      margin: 0 auto 32px;
+      line-height: 1.5;
+    }
+    .hero-byline {
+      font-size: 0.78rem;
+      color: var(--text-lt);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    /* PULL QUOTE */
+    .pull-quote {
+      border-top: 2px solid var(--gold);
+      border-bottom: 2px solid var(--gold);
+      padding: 30px 48px;
+      margin: 40px 0;
+      text-align: center;
+    }
+    .pull-quote p {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: 1.5rem;
+      line-height: 1.5;
+      color: var(--navy);
+    }
+    .pull-quote cite {
+      display: block;
+      margin-top: 14px;
+      font-size: 0.72rem;
+      letter-spacing: 0.13em;
+      text-transform: uppercase;
+      color: var(--text-lt);
+      font-style: normal;
+    }
+
+    /* ESSAY */
+    .essay {
+      column-count: 2;
+      column-gap: 52px;
+      padding: 40px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    @media (max-width: 680px) { .essay { column-count: 1; } }
+    .essay p { margin-bottom: 1.3em; font-size: 1rem; text-align: justify; hyphens: auto; }
+    .essay p:first-child::first-letter {
+      font-family: 'Playfair Display', serif;
+      font-size: 4.2rem;
+      font-weight: 700;
+      float: left;
+      line-height: 0.72;
+      margin-right: 9px;
+      margin-top: 10px;
+      color: var(--navy);
+    }
+
+    /* PHOTO GALLERY */
+    .photo-sec { padding: 36px 0; border-bottom: 1px solid var(--border); }
+    .photo-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr;
+      gap: 14px;
+      margin: 22px 0 10px;
+    }
+    @media (max-width: 700px) { .photo-grid { grid-template-columns: 1fr; } }
+    .photo-item { overflow: hidden; }
+    .photo-item img {
+      width: 100%;
+      height: 210px;
+      object-fit: cover;
+      display: block;
+      border: 1px solid var(--border);
+      background: var(--cream-mid);
+    }
+    .photo-item.photo-wide img { height: 230px; }
+    .photo-item figcaption {
+      font-size: 0.73rem;
+      color: var(--text-lt);
+      font-style: italic;
+      padding: 6px 0 0;
+      line-height: 1.4;
+    }
+    .photo-credit {
+      font-size: 0.68rem;
+      color: var(--text-lt);
+      margin-top: 8px;
+      border-top: 1px solid var(--border);
+      padding-top: 6px;
+    }
+
+    /* FLAG CALLOUT */
+    .flag-callout {
+      display: flex;
+      align-items: center;
+      gap: 22px;
+      background: var(--cream-mid);
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--navy);
+      padding: 18px 22px;
+      margin: 22px 0;
+    }
+    .flag-callout img { height: 68px; border: 1px solid var(--border); flex-shrink: 0; }
+    .flag-callout-text { font-size: 0.83rem; color: var(--text-mid); line-height: 1.65; }
+    .flag-callout-text strong { color: var(--navy); }
+
+    /* SECTION HEADER */
+    .sec-hdr { padding: 38px 0 18px; border-bottom: 1px solid var(--border); margin-bottom: 28px; }
+    .sec-label {
+      font-size: 0.68rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--gold);
+      font-weight: 600;
+      margin-bottom: 7px;
+    }
+    .sec-hdr h2 { font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 700; color: var(--navy); line-height: 1.15; }
+    .sec-hdr .deck { font-style: italic; color: var(--text-mid); margin-top: 7px; font-size: 0.94rem; }
+
+    /* CHART SECTION */
+    .chart-sec { padding: 36px 0; border-bottom: 1px solid var(--border); }
+    .chart-box { background: white; border: 1px solid var(--border); padding: 26px 26px 20px; }
+    .chart-title { font-family: 'Playfair Display', serif; font-weight: 700; font-size: 1.05rem; color: var(--navy); margin-bottom: 3px; }
+    .chart-subtitle { font-size: 0.72rem; color: var(--text-lt); letter-spacing: 0.07em; text-transform: uppercase; margin-bottom: 18px; }
+    .chart-caption { margin-top: 14px; font-size: 0.8rem; color: var(--text-mid); font-style: italic; border-top: 1px solid var(--border); padding-top: 10px; line-height: 1.5; }
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
+    @media (max-width: 680px) { .two-col { grid-template-columns: 1fr; } }
+
+    /* STAT CALLOUT */
+    .stat-callout {
+      background: var(--navy);
+      color: var(--cream);
+      padding: 30px 36px;
+      margin: 28px 0;
+      display: flex;
+      align-items: center;
+      gap: 36px;
+    }
+    @media (max-width: 580px) { .stat-callout { flex-direction: column; gap: 12px; } }
+    .stat-big { font-family: 'Playfair Display', serif; font-size: 3.6rem; font-weight: 900; color: var(--gold-lt); line-height: 1; white-space: nowrap; flex-shrink: 0; }
+    .stat-body { font-size: 0.94rem; line-height: 1.6; }
+    .stat-body strong { color: var(--gold-lt); }
+
+    /* MAP */
+    .map-sec { padding: 36px 0; border-bottom: 1px solid var(--border); }
+    .map-box { background: white; border: 1px solid var(--border); padding: 22px; margin: 24px 0; }
+    .map-box svg { width: 100%; height: auto; display: block; }
+    .map-box iframe { display: block; width: 100%; border: 0; }
+    .map-box img { width: 100%; height: auto; display: block; }
+    .map-legend { display: flex; gap: 20px; flex-wrap: wrap; margin-top: 14px; font-size: 0.78rem; color: var(--text-mid); }
+    .leg-item { display: flex; align-items: center; gap: 7px; }
+    .leg-swatch { width: 22px; height: 13px; border: 1px solid rgba(0,0,0,0.12); flex-shrink: 0; }
+
+    /* TABLE */
+    .table-sec { padding: 36px 0; border-bottom: 1px solid var(--border); }
+    .tbl-wrap { overflow-x: auto; margin: 22px 0; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.87rem; }
+    thead tr { background: var(--navy); color: var(--cream); }
+    thead th { padding: 12px 15px; text-align: left; font-weight: 600; letter-spacing: 0.05em; font-size: 0.78rem; text-transform: uppercase; white-space: nowrap; }
+    thead th:first-child { width: 200px; }
+    tbody tr:nth-child(even) { background: #EEF2FA; }
+    tbody tr:first-child { background: #FFF0F0; }
+    tbody tr:first-child td { font-weight: 600; color: var(--navy); }
+    tbody td { padding: 10px 15px; border-bottom: 1px solid var(--border); }
+    .bad  { color: var(--red); font-weight: 500; }
+    .good { color: var(--green); font-weight: 500; }
+    .mid  { color: var(--text-mid); }
+    .tbl-note { font-size: 0.74rem; color: var(--text-lt); font-style: italic; margin-top: 8px; line-height: 1.5; }
+
+    /* FLYWHEEL */
+    .fly-sec { padding: 36px 0; border-bottom: 1px solid var(--border); }
+    .fly-box { background: var(--navy); padding: 44px 32px 36px; margin: 22px 0; }
+    .fly-heading { font-family: 'Playfair Display', serif; color: var(--cream); font-size: 1.15rem; font-weight: 700; text-align: center; margin-bottom: 5px; }
+    .fly-sub { text-align: center; color: var(--gold-lt); font-size: 0.72rem; letter-spacing: 0.14em; text-transform: uppercase; margin-bottom: 36px; }
+    .fly-row { display: flex; justify-content: center; align-items: stretch; flex-wrap: wrap; gap: 0; max-width: 940px; margin: 0 auto; }
+    .fly-step { background: rgba(255,255,255,0.07); border: 1px solid rgba(192,40,30,0.4); color: var(--cream); padding: 16px 14px; text-align: center; font-size: 0.79rem; line-height: 1.35; width: 150px; flex-shrink: 0; }
+    .fly-step .sn { display: block; font-family: 'Playfair Display', serif; font-size: 1.6rem; font-weight: 700; color: var(--gold-lt); margin-bottom: 6px; line-height: 1; }
+    .fly-arr { display: flex; align-items: center; padding: 0 4px; color: var(--gold-lt); font-size: 1.3rem; flex-shrink: 0; }
+    .fly-note { text-align: center; color: rgba(255,255,255,0.45); font-style: italic; font-size: 0.77rem; margin-top: 26px; max-width: 680px; margin-left: auto; margin-right: auto; line-height: 1.5; }
+
+    /* CLOSING */
+    .close-sec { padding: 48px 0; }
+    .close-body { max-width: 700px; margin: 0 auto; }
+    .close-body p { font-size: 1rem; margin-bottom: 1.3em; text-align: justify; hyphens: auto; }
+    .stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); margin: 32px 0; }
+    @media (max-width: 580px) { .stat-grid { grid-template-columns: 1fr; } }
+    .stat-cell { background: white; padding: 22px 18px; text-align: center; }
+    .stat-cell .num { font-family: 'Playfair Display', serif; font-size: 2.5rem; font-weight: 700; color: var(--navy); display: block; line-height: 1.1; }
+    .stat-cell .lbl { font-size: 0.76rem; color: var(--text-lt); text-transform: uppercase; letter-spacing: 0.08em; margin-top: 5px; line-height: 1.4; }
+
+    /* FOOTER */
+    .footer { border-top: 3px solid var(--navy); padding: 14px 0 0; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; margin-top: 44px; }
+    .foot-name { font-family: 'Playfair Display', serif; font-weight: 900; color: var(--navy); letter-spacing: 0.05em; font-size: 0.95rem; }
+    .foot-note { font-size: 0.7rem; color: var(--text-lt); letter-spacing: 0.06em; }
+
+    @media print {
+      body { max-width: 100%; padding: 0 16px; font-size: 11pt; }
+      .chart-sec, .map-sec, .table-sec, .fly-sec { page-break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- MASTHEAD -->
+<header class="masthead">
+  <span class="mast-name">The Civic Review</span>
+  <div class="mast-right">
+    <img class="mast-flag"
+         src="https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_Carroll_County%2C_Maryland.png"
+         alt="Carroll County, Maryland flag">
+    <span class="mast-issue">Vol. XII &nbsp;·&nbsp; Spring 2026 &nbsp;·&nbsp; Regional Economics &amp; Urban Policy</span>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-kicker">Special Report &nbsp;·&nbsp; Carroll County, Maryland</div>
+  <div class="hero-flag-wrap">
+    <img class="hero-flag-img"
+         src="https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_Carroll_County%2C_Maryland.png"
+         alt="Carroll County, Maryland flag">
+    <div class="hero-flag-label">
+      Carroll County<br>Maryland<br>Est. 1837
+    </div>
+  </div>
+  <h1>The Trap<br>of Charm</h1>
+  <div class="hero-rule"></div>
+  <p class="hero-subhead">Why Carroll County's greatest asset<br>is its greatest economic liability</p>
+  <p class="hero-byline">By the Economics Desk &nbsp;·&nbsp; March 2026</p>
+</section>
+
+<!-- OPENING PULL QUOTE -->
+<blockquote class="pull-quote">
+  <p>"Carroll County, Maryland sells a dream: rolling hills, quiet streets, no traffic. The problem is that 45,000 of its residents drive to someone else's county to earn a living."</p>
+  <cite>The Civic Review, Spring 2026</cite>
+</blockquote>
+
+<!-- OPENING ESSAY -->
+<div class="essay">
+  <p>There is a particular kind of American county that has perfected the art of being pleasant to live in and difficult to work in. Carroll County, Maryland, sitting at the northwestern edge of the Baltimore metropolitan area, is perhaps the Mid-Atlantic's finest exemplar of this type. With a median household income well above the national average, low crime, excellent public schools, and a landscape of rolling hills and preserved farmland that wouldn't look out of place on a tourism brochure, Carroll appears, by most quality-of-life metrics, to be thriving.</p>
+  <p>Yet examine its economic structure and a more complicated picture emerges. Approximately 45.5 percent of Carroll County's resident workforce commutes outside its borders each day, at a rate more than one and a half times the national bedroom-community average. They drive east to Baltimore, southeast to Howard County's corporate campuses, and south toward the Washington corridor, returning each evening to the county they have chosen to inhabit but not, in any economic sense, to sustain.</p>
+  <p>This arrangement is, from the perspective of individual residents, entirely rational. Housing is cheaper than in Baltimore or Howard County. The schools are good. The pace is slower. And the interstate access via I-70, I-695, and I-795 makes the sacrifice of a commute averaging 35.6 minutes feel manageable, if not quite painless.</p>
+  <p>But Carroll County's appeal as a residential destination is precisely what makes it unappealing as a corporate one. Major employers require two things above all else: access to talent and access to infrastructure. Carroll County offers a talent pool that spends its most productive hours somewhere else, and a transit infrastructure so car-dependent that fewer than one percent of residents use public transportation. For a Fortune 500 site selector weighing Carroll against Howard or Frederick, the calculus is swift and rarely favorable.</p>
+  <p>What results is a self-reinforcing flywheel. The county attracts residents who value rural character and accept the commute as a reasonable toll. The presence of those commuter-residents, rather than a dense local workforce, deprives the county of the economic activity that would attract major employers. The absence of major employers preserves the rural character. The rural character attracts more commuter-residents. Repeat indefinitely.</p>
+</div>
+
+<!-- PHOTO GALLERY -->
+<section class="photo-sec">
+  <div class="sec-hdr">
+    <div class="sec-label">Carroll County, Maryland</div>
+    <h2>"A Portrait of Place"</h2>
+    <p class="deck">The landscapes and landmarks that define a county which has deliberately traded commerce for character</p>
+  </div>
+
+  <div class="flag-callout">
+    <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_Carroll_County%2C_Maryland.png"
+         alt="Carroll County flag">
+    <div class="flag-callout-text">
+      <strong>The Carroll County Flag</strong> bears the county seal on a white field with a blue border. The seal depicts a four-horse freight wagon within three concentric rings of red, blue, and black, evoking the county's 19th-century commercial heritage. Carroll County was established in <strong>1837</strong> and named for Charles Carroll of Carrollton, the last surviving signer of the Declaration of Independence. The county's identity, encoded in that seal, has always been one of movement and transit: freight wagons then, commuter cars now.
+    </div>
+  </div>
+
+  <div class="photo-grid">
+    <figure class="photo-item photo-wide">
+      <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Pipe_Creek_Friends_Meetinghouse.jpg"
+           alt="Pipe Creek Friends Meetinghouse, Union Bridge, Carroll County"
+           loading="lazy">
+      <figcaption>Pipe Creek Friends Meetinghouse (est. 1771), Union Bridge. One of the oldest structures in Carroll County, it served the ancestors of President Herbert Hoover and reflects the county's deep Quaker heritage.</figcaption>
+    </figure>
+    <figure class="photo-item">
+      <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Stone_House%2C_Detour_and_Rocky_Ridge_-_panoramio.jpg"
+           alt="Historic stone farmhouse, northern Carroll County"
+           loading="lazy">
+      <figcaption>Rural stone farmhouse, northern Carroll County. Historic agricultural buildings dot the protected rural landscape that draws new residents even as it deters major employers.</figcaption>
+    </figure>
+    <figure class="photo-item">
+      <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Carroll_County_Equestrian_Center_05.JPG"
+           alt="Carroll County Equestrian Center, Mt. Airy"
+           loading="lazy">
+      <figcaption>Carroll County Equestrian Center, Mt. Airy. Public amenities oriented toward quality of life reflect a county whose priorities run perpendicular to commercial density.</figcaption>
+    </figure>
+  </div>
+  <p class="photo-credit">Photos: Wikimedia Commons contributors. Licensed under Creative Commons Attribution-ShareAlike.</p>
+</section>
+
+<!-- FIGURE 1: COMMUTER DIVIDE -->
+<section class="chart-sec">
+  <div class="sec-hdr">
+    <div class="sec-label">Data · Figure 1</div>
+    <h2>"The Commuter Divide"</h2>
+    <p class="deck">Carroll County exports nearly half its workforce daily, far exceeding regional and national norms for residential communities</p>
+  </div>
+
+  <div class="stat-callout">
+    <span class="stat-big">45.5%</span>
+    <p class="stat-body">of Carroll County's resident workforce commutes <strong>outside the county</strong> to work each morning, compared to a national bedroom-community average of approximately 28%. That 17-percentage-point gap represents tens of thousands of daily commuters who earn, spend, and pay payroll taxes in other jurisdictions.</p>
+  </div>
+
+  <div class="two-col">
+    <div class="chart-box">
+      <div class="chart-title">Resident Workforce: Where They Work</div>
+      <div class="chart-subtitle">Carroll County, Maryland, 2024 Estimate</div>
+      <canvas id="c1a" height="230"></canvas>
+      <p class="chart-caption">Nearly one in two residents leaves the county each morning. The local economy retains 54.5% of its workforce, a share under sustained pressure as commuter-friendly residential development outpaces commercial growth.</p>
+    </div>
+    <div class="chart-box">
+      <div class="chart-title">Commuter Outflow Rate: Comparison</div>
+      <div class="chart-subtitle">Selected Maryland Counties &amp; U.S. Baseline</div>
+      <canvas id="c1b" height="230"></canvas>
+      <p class="chart-caption">Carroll's outflow rate nearly doubles Howard County's, the region's most economically self-sufficient jurisdiction, and exceeds Frederick County by more than seven points. Only Howard rivals Carroll in proximity to Baltimore.</p>
+    </div>
+  </div>
+</section>
+
+<!-- FIGURE 2: THE LONG ROAD -->
+<section class="chart-sec">
+  <div class="sec-hdr">
+    <div class="sec-label">Data · Figure 2</div>
+    <h2>"The Long Road"</h2>
+    <p class="deck">Carroll residents absorb a commute penalty of more than nine minutes each way compared to the national average, with no mass transit alternative in sight</p>
+  </div>
+  <div class="chart-box">
+    <div class="chart-title">Average One-Way Commute Time (Minutes)</div>
+    <div class="chart-subtitle">Carroll County vs. Neighboring Jurisdictions vs. U.S. National Average</div>
+    <canvas id="c2" height="155"></canvas>
+    <p class="chart-caption">Sources: U.S. Census Bureau American Community Survey 5-Year Estimates (2019-2023). The 35.6-minute mean conceals significant variance: a meaningful share of Carroll residents working in Washington, D.C. commute in excess of 60 minutes each way. Less than 1% use any form of mass transit.</p>
+  </div>
+</section>
+
+<!-- FIGURE 3: MAPS -->
+<section class="map-sec">
+  <div class="sec-hdr">
+    <div class="sec-label">Geography · Figure 3</div>
+    <h2>"Where the Workers Go"</h2>
+    <p class="deck">Carroll County's commuter flows reveal a workforce oriented almost entirely toward neighboring employment hubs, especially Baltimore and the Route 29 corridor</p>
+  </div>
+
+  <div class="two-col" style="margin-bottom:22px;">
+    <div class="map-box">
+      <div class="chart-title">Carroll County Within Maryland</div>
+      <div class="chart-subtitle">North-Central Maryland, Northwest of Baltimore</div>
+      <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Map_of_Maryland_highlighting_Carroll_County.svg"
+           alt="Map of Maryland with Carroll County highlighted"
+           style="max-height:220px; object-fit:contain;">
+      <p class="chart-caption">Carroll County (shaded) occupies the north-central tier of Maryland, sandwiched between Frederick County to the west and Baltimore City and County to the east. Its position off the primary I-95 corridor is a persistent disadvantage in corporate site selection.</p>
+    </div>
+    <div class="map-box">
+      <div class="chart-title">Regional Street Map</div>
+      <div class="chart-subtitle">Carroll County and Surrounding Jurisdictions</div>
+      <iframe src="https://www.openstreetmap.org/export/embed.html?bbox=-77.35%2C39.47%2C-76.85%2C39.83&layer=mapnik"
+              style="height:220px;"
+              title="Carroll County, Maryland regional street map"
+              loading="lazy"></iframe>
+      <p class="chart-caption">The county seat of Westminster lies roughly 30 miles northwest of Baltimore's Inner Harbor. Limited rail and transit infrastructure defines the county's connectivity relative to its neighbors. Map: OpenStreetMap contributors.</p>
+    </div>
+  </div>
+</section>
+<!-- FIGURE 4: COMPETITOR SCORECARD -->
+<section class="table-sec">
+  <div class="sec-hdr">
+    <div class="sec-label">Comparative Analysis · Figure 4</div>
+    <h2>"The Competitor Scorecard"</h2>
+    <p class="deck">Carroll County trails its neighbors on virtually every metric that major employers use to evaluate site selection, from transit access to industrial land availability</p>
+  </div>
+  <div class="tbl-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Metric</th>
+          <th>Carroll Co.</th>
+          <th>Howard Co.</th>
+          <th>Frederick Co.</th>
+          <th>Baltimore Co.</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Fortune 500 presence</td>
+          <td class="bad">None</td>
+          <td class="good">2+</td>
+          <td class="mid">1</td>
+          <td class="good">3+</td>
+        </tr>
+        <tr>
+          <td>Resident workforce commuting <em>out</em></td>
+          <td class="bad">45.5%</td>
+          <td class="good">~22%</td>
+          <td class="mid">~38%</td>
+          <td class="good">~18%</td>
+        </tr>
+        <tr>
+          <td>Mass transit usage</td>
+          <td class="bad">&lt;1%</td>
+          <td class="good">~8%</td>
+          <td class="mid">~3%</td>
+          <td class="good">~10%</td>
+        </tr>
+        <tr>
+          <td>Avg. one-way commute</td>
+          <td class="bad">35.6 min</td>
+          <td class="mid">~31 min</td>
+          <td class="mid">~32 min</td>
+          <td class="good">~27 min</td>
+        </tr>
+        <tr>
+          <td>Proximity to BWI Airport</td>
+          <td class="bad">45+ min</td>
+          <td class="good">~25 min</td>
+          <td class="mid">~35 min</td>
+          <td class="good">~15 min</td>
+        </tr>
+        <tr>
+          <td>Industrial land available</td>
+          <td class="bad">Low</td>
+          <td class="good">High</td>
+          <td class="mid">Medium</td>
+          <td class="good">High</td>
+        </tr>
+        <tr>
+          <td>Population (est. 2024)</td>
+          <td class="mid">~175,000</td>
+          <td class="good">~335,000</td>
+          <td class="mid">~285,000</td>
+          <td class="good">~850,000</td>
+        </tr>
+        <tr>
+          <td>Total businesses (est.)</td>
+          <td class="mid">~4,500</td>
+          <td class="good">~12,000</td>
+          <td class="mid">~7,500</td>
+          <td class="good">~22,000</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="tbl-note">
+    Sources: U.S. Census Bureau ACS 2023; Maryland Department of Commerce; Greater Baltimore Committee; county economic development offices. Estimates rounded.
+    <span style="color:var(--red)">Red</span> = unfavorable vs. peers.
+    <span style="color:var(--green)">Green</span> = favorable.
+  </p>
+</section>
+
+<!-- FIGURE 5: FLYWHEEL -->
+<section class="fly-sec">
+  <div class="sec-hdr">
+    <div class="sec-label">Analysis · Figure 5</div>
+    <h2>"The Flywheel Effect"</h2>
+    <p class="deck">A self-reinforcing cycle that is difficult to interrupt without challenging the county's core residential identity</p>
+  </div>
+  <div class="fly-box">
+    <div class="fly-heading">The Carroll County Economic Cycle</div>
+    <div class="fly-sub">How rural charm perpetuates economic stasis</div>
+    <div class="fly-row">
+      <div class="fly-step">
+        <span class="sn">&#9312;</span>
+        Rural character &amp; affordable housing attract new residents
+      </div>
+      <div class="fly-arr">&#8594;</div>
+      <div class="fly-step">
+        <span class="sn">&#9313;</span>
+        Residents accept long commutes to outside employers
+      </div>
+      <div class="fly-arr">&#8594;</div>
+      <div class="fly-step">
+        <span class="sn">&#9314;</span>
+        No dense local workforce available to major corporate tenants
+      </div>
+      <div class="fly-arr">&#8594;</div>
+      <div class="fly-step">
+        <span class="sn">&#9315;</span>
+        Major employers locate in Howard, Frederick, or Baltimore
+      </div>
+      <div class="fly-arr">&#8594;</div>
+      <div class="fly-step">
+        <span class="sn">&#9316;</span>
+        Rural character is preserved; cycle begins again at &#9312;
+      </div>
+    </div>
+    <p class="fly-note">Breaking the cycle requires either attracting employers willing to draw workers from a wide radius, or a sustained increase in commercial and industrial zoning, both of which risk the rural identity the entire cycle is built upon.</p>
+  </div>
+</section>
+
+<!-- FIGURE 6: EMPLOYER PROFILE -->
+<section class="chart-sec">
+  <div class="sec-hdr">
+    <div class="sec-label">Data · Figure 6</div>
+    <h2>"A Modest Employer Profile"</h2>
+    <p class="deck">Carroll County's 4,500+ businesses skew heavily toward micro-enterprises; large employers remain exceptional rather than the norm</p>
+  </div>
+  <div class="two-col">
+    <div class="chart-box">
+      <div class="chart-title">Businesses by Employee Count</div>
+      <div class="chart-subtitle">Carroll County, Estimated Distribution, 2024</div>
+      <canvas id="c3a" height="265"></canvas>
+      <p class="chart-caption">The county's employer base is overwhelmingly composed of micro-businesses. Only a small cohort of firms: Carroll Hospital, EVAPCO, Flowserve, and a handful of manufacturers approach the workforce scale that would qualify them as economic anchors.</p>
+    </div>
+    <div class="chart-box">
+      <div class="chart-title">Carroll County's Largest Employers</div>
+      <div class="chart-subtitle">Approximate Headcount, 2024 Estimate</div>
+      <canvas id="c3b" height="265"></canvas>
+      <p class="chart-caption">The largest employers in Carroll are predominantly healthcare, light manufacturing, and distribution, sectors with modest site-selection requirements, less likely to catalyze the broader agglomeration effects that transform a county's economic character.</p>
+    </div>
+  </div>
+</section>
+
+<!-- CLOSING -->
+<section class="close-sec">
+  <div class="sec-hdr">
+    <div class="sec-label">Conclusion</div>
+    <h2>"The Bottom Line"</h2>
+  </div>
+
+  <div class="stat-grid">
+    <div class="stat-cell">
+      <span class="num">4,500+</span>
+      <div class="lbl">Businesses in Carroll County</div>
+    </div>
+    <div class="stat-cell">
+      <span class="num">&lt;1%</span>
+      <div class="lbl">Residents using mass transit</div>
+    </div>
+    <div class="stat-cell">
+      <span class="num">+9.2 min</span>
+      <div class="lbl">Above national commute average</div>
+    </div>
+  </div>
+
+  <div class="close-body">
+    <p>Carroll County is not failing. Its residents are, by most measures, prosperous and content. Its schools perform well. Its crime rate is low. Its farms are beautiful. It is, in the vocabulary of American place-making, a success story, a community that has preserved what it values in the face of relentless suburban pressure from every direction.</p>
+    <p>But the same preferences that make it a desirable address make it an unattractive investment for the kind of large-scale employers that would give its economy depth and resilience. The county has, in effect, specialized in a particular kind of residential amenity. That specialization has consequences: a tax base skewed toward residential property, a commercial sector composed mostly of small businesses serving local needs, and a workforce that exports its most productive hours to other jurisdictions every single morning.</p>
+    <p>For Carroll County's elected leadership, this is not a failure of vision but a genuine dilemma of identity. Attracting major employers requires more industrial land, better transit, greater density, all things that would, by degrees, make Carroll County less like Carroll County. The county has implicitly decided, through decades of zoning choices and political culture, that it prefers to remain a quiet and beautiful bedroom. The economic consequences of that preference are real, quantifiable, and unlikely to change unless the preference itself does.</p>
+  </div>
+
+  <blockquote class="pull-quote" style="margin-top:48px;">
+    <p>"The county has essentially specialized in being a residential area for people who work elsewhere. That is a choice. It comes with a price."</p>
+    <cite>Carroll County Economic Development Profile, paraphrased</cite>
+  </blockquote>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <span class="foot-name">The Civic Review</span>
+  <span class="foot-note">Data: U.S. Census Bureau ACS · Maryland Dept. of Commerce · Vol. XII, Spring 2026 · All figures estimates unless noted</span>
+</footer>
+
+<!-- CHART SCRIPTS -->
+<script>
+  Chart.defaults.font.family = "'Source Serif 4', Georgia, serif";
+  Chart.defaults.color = '#4a4a4a';
+
+  const C = {
+    navy:  '#1B3A6B',
+    gold:  '#C0281E',
+    red:   '#8B1527',
+    green: '#2a6e3f',
+    amber: '#c08a40',
+    gray:  '#9a9590',
+    lt:    '#C0CCE3'
+  };
+
+  new Chart(document.getElementById('c1a'), {
+    type: 'doughnut',
+    data: {
+      labels: ['Commute outside county (45.5%)', 'Work within Carroll Co. (54.5%)'],
+      datasets: [{
+        data: [45.5, 54.5],
+        backgroundColor: [C.red, C.navy],
+        borderColor: ['white', 'white'],
+        borderWidth: 3,
+        hoverOffset: 6
+      }]
+    },
+    options: {
+      cutout: '60%',
+      plugins: {
+        legend: { position: 'bottom', labels: { padding: 18, font: { size: 11 }, boxWidth: 14 } },
+        tooltip: { callbacks: { label: ctx => ` ${ctx.parsed}% of resident workforce` } }
+      }
+    }
+  });
+
+  new Chart(document.getElementById('c1b'), {
+    type: 'bar',
+    data: {
+      labels: ['Carroll County', 'Frederick County', 'National Avg.', 'Howard County', 'Baltimore County'],
+      datasets: [{
+        data: [45.5, 38, 28, 22, 18],
+        backgroundColor: [C.red, C.amber, C.gray, '#6aaa7a', C.green],
+        borderWidth: 0,
+        borderRadius: 2
+      }]
+    },
+    options: {
+      indexAxis: 'y',
+      plugins: {
+        legend: { display: false },
+        tooltip: { callbacks: { label: ctx => ` ${ctx.parsed.x}% commute outside county` } }
+      },
+      scales: {
+        x: { min: 0, max: 55, ticks: { callback: v => v + '%', font: { size: 11 } }, grid: { color: '#D5DFEE' } },
+        y: { ticks: { font: { size: 11 } }, grid: { display: false } }
+      }
+    }
+  });
+
+  new Chart(document.getElementById('c2'), {
+    type: 'bar',
+    data: {
+      labels: ['Carroll County', 'Frederick County', 'Howard County', 'Baltimore County', 'U.S. National Avg.'],
+      datasets: [{
+        data: [35.6, 32.1, 31.3, 27.2, 26.4],
+        backgroundColor: [C.red, C.amber, C.amber, '#6aaa7a', C.gray],
+        borderWidth: 0,
+        borderRadius: 3,
+        barThickness: 48
+      }]
+    },
+    options: {
+      plugins: {
+        legend: { display: false },
+        tooltip: { callbacks: { label: ctx => ` ${ctx.parsed.y} minutes` } }
+      },
+      scales: {
+        y: { min: 0, max: 42, ticks: { callback: v => v + ' min', font: { size: 11 } }, grid: { color: '#D5DFEE' } },
+        x: { ticks: { font: { size: 11 } }, grid: { display: false } }
+      }
+    },
+    plugins: [{
+      id: 'refLine',
+      afterDraw(chart) {
+        const { ctx, scales: { y }, chartArea: { left, right } } = chart;
+        const yPx = y.getPixelForValue(26.4);
+        ctx.save();
+        ctx.setLineDash([6, 4]);
+        ctx.strokeStyle = C.navy;
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.moveTo(left, yPx);
+        ctx.lineTo(right, yPx);
+        ctx.stroke();
+        ctx.setLineDash([]);
+        ctx.fillStyle = C.navy;
+        ctx.font = '11px "Source Serif 4", Georgia, serif';
+        ctx.textAlign = 'right';
+        ctx.fillText('U.S. National Average: 26.4 min', right - 4, yPx - 6);
+        ctx.restore();
+      }
+    }]
+  });
+
+  new Chart(document.getElementById('c3a'), {
+    type: 'doughnut',
+    data: {
+      labels: ['Micro (<10 employees)', 'Small (10-99)', 'Medium (100-499)', 'Large (500+)'],
+      datasets: [{
+        data: [70, 25, 4, 1],
+        backgroundColor: [C.navy, '#2a4d6e', C.gold, C.red],
+        borderColor: 'white',
+        borderWidth: 3,
+        hoverOffset: 6
+      }]
+    },
+    options: {
+      cutout: '55%',
+      plugins: {
+        legend: { position: 'bottom', labels: { padding: 16, font: { size: 11 }, boxWidth: 13 } },
+        tooltip: { callbacks: { label: ctx => ` ~${ctx.parsed}% of all businesses (~${Math.round(ctx.parsed * 45)} firms)` } }
+      }
+    }
+  });
+
+  new Chart(document.getElementById('c3b'), {
+    type: 'bar',
+    data: {
+      labels: ['Carroll Hospital', 'CCPS (schools)', 'County Govt.', 'EVAPCO', 'Flowserve Corp.', 'Random House Dist.'],
+      datasets: [{
+        data: [2200, 1900, 1200, 900, 650, 500],
+        backgroundColor: C.navy,
+        borderWidth: 0,
+        borderRadius: 2,
+        barThickness: 24
+      }]
+    },
+    options: {
+      indexAxis: 'y',
+      plugins: {
+        legend: { display: false },
+        tooltip: { callbacks: { label: ctx => ` ~${ctx.parsed.x.toLocaleString()} employees (est.)` } }
+      },
+      scales: {
+        x: { min: 0, max: 2600, ticks: { callback: v => v.toLocaleString(), font: { size: 10 } }, grid: { color: '#D5DFEE' } },
+        y: { ticks: { font: { size: 10.5 } }, grid: { display: false } }
+      }
+    }
+  });
+</script>
+
+</body>
+</html>
